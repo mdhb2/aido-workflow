@@ -29,6 +29,30 @@ Detect and route all of the following as equivalent:
 
 Always route to this skill: `aido-workflow`.
 
+## OpenCode Slash Commands
+
+Register and support these slash commands explicitly:
+
+- `/aido-init`
+- `/aido-brainstorm`
+- `/aido-grill`
+- `/aido-enhance`
+- `/aido-plan-with-file`
+- `/aido-breakdown`
+- `/aido-execute-next`
+- `/aido-caveman-review`
+- `/aido-debug`
+- `/aido-debug-fix`
+- `/aido-document`
+- `/aido-archive`
+- `/aido-clean`
+- `/aido-status`
+- `/aido-resume`
+- `/aido-compact`
+- `/aido-caveman`
+
+Also support non-slash aliases for each command above (`aido-*`).
+
 ## Storage Policy
 
 All workflow state must be inside `.aido-workflow/`.
