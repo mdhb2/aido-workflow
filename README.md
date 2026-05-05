@@ -61,6 +61,9 @@ Full setup:
 curl -fsSL https://raw.githubusercontent.com/mdhb2/aido-workflow/master/scripts/install-aido.sh | bash
 ```
 
+The installer fails fast if any supporting skill cannot be installed.
+It also runs `npx skills list -a opencode` at the end for verification.
+
 ## Verify in OpenCode
 
 1. Ensure skill appears as `aido-workflow`.
