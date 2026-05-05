@@ -26,6 +26,8 @@ Both formats are supported and treated equally:
 - `aido-breakdown`
 - `aido-execute-next`
 - `aido-caveman-review`
+- `aido-debug`
+- `aido-debug-fix`
 - `aido-document`
 - `aido-archive`
 - `aido-clean`
@@ -46,6 +48,7 @@ Both formats are supported and treated equally:
 8. Compact: https://skills.sh/catlog22/claude-code-workflow/compact
 9. Caveman: https://skills.sh/juliusbrussee/caveman/caveman
 10. Caveman Review: https://skills.sh/juliusbrussee/caveman/caveman-review
+11. Diagnose: https://github.com/mattpocock/skills
 
 ## Install
 
@@ -85,7 +88,7 @@ More details: `skills/aido-workflow/references/opencode.md` and `skills/aido-wor
 
 ## Ideal Workflow
 
-`aido-init` -> `aido-enhance` (optional) -> `aido-brainstorm` -> `aido-grill` -> `aido-plan-with-file` -> `aido-breakdown` -> `aido-execute-next` -> `aido-caveman-review` (optional/recommended) -> `aido-document` -> `aido-archive` -> `aido-clean`
+`aido-init` -> `aido-enhance` (optional) -> `aido-brainstorm` -> `aido-grill` -> `aido-plan-with-file` -> `aido-breakdown` -> `aido-execute-next` -> `aido-caveman-review` (optional/recommended) -> `aido-debug` or `aido-debug-fix` (when needed) -> `aido-document` -> `aido-archive` -> `aido-clean`
 
 ## Storage Policy
 
@@ -162,6 +165,13 @@ Rules:
   - `.aido-workflow/test_report.md`
   - `.aido-workflow/decisions.md`
 - If blocking issue exists, stop before `aido-document`.
+
+## Debug Policy
+
+- Use `aido-debug` for diagnosis-only flow when errors occur or behavior is unexpected.
+- `aido-debug` must not auto-fix code and must not mutate `.aido-workflow/task_plan.md`.
+- Use `aido-debug-fix` for direct autofix.
+- `aido-debug-fix` is restricted to active phase scope only; if cross-phase changes are required, mark workflow `BLOCKED` and stop.
 
 ## Cleanup Policy
 

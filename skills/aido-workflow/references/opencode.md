@@ -46,12 +46,19 @@ Smoke test commands:
 2. `aido-status`
 3. `/aido-status`
 4. `aido-resume`
+5. `aido-debug`
+6. `/aido-debug-fix`
 
 Expected:
 
 - Commands recognized by OpenCode
 - Routed to `aido-workflow`
 - State stored under `.aido-workflow/`
+
+Debug behavior:
+
+- `aido-debug` performs diagnosis only.
+- `aido-debug-fix` may apply autofix, but only for active phase scope.
 
 ## Troubleshooting: Command Not Detected
 

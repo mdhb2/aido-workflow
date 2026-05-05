@@ -22,6 +22,8 @@ Examples:
 - `aido-breakdown`
 - `aido-execute-next`
 - `aido-caveman-review`
+- `aido-debug`
+- `aido-debug-fix`
 - `aido-document`
 - `aido-archive`
 - `aido-clean`

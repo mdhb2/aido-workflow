@@ -2,7 +2,7 @@
 
 Ideal order:
 
-`aido-init` -> `aido-enhance` (optional) -> `aido-brainstorm` -> `aido-grill` -> `aido-plan-with-file` -> `aido-breakdown` -> `aido-execute-next` -> `aido-caveman-review` (optional/recommended) -> `aido-document` -> `aido-archive` -> `aido-clean`
+`aido-init` -> `aido-enhance` (optional) -> `aido-brainstorm` -> `aido-grill` -> `aido-plan-with-file` -> `aido-breakdown` -> `aido-execute-next` -> `aido-caveman-review` (optional/recommended) -> `aido-debug` or `aido-debug-fix` (when needed) -> `aido-document` -> `aido-archive` -> `aido-clean`
 
 ## Stage Rules
 
@@ -28,20 +28,26 @@ Ideal order:
    - Must auto-call `/aido-plan-with-file`.
 
 7. `aido-execute-next`
-   - Run strict TDD for next `PENDING` phase.
+    - Run strict TDD for next `PENDING` phase.
+    - If failing unexpectedly or repeatedly, run `aido-debug` before continuing.
 
 8. `aido-caveman-review` (recommended)
-   - Mandatory when changes are significant.
-   - If blocking findings exist, stop workflow.
+    - Mandatory when changes are significant.
+    - If blocking findings exist, stop workflow.
 
-9. `aido-document`
-   - Produce module docs and doc coverage report.
+9. `aido-debug` or `aido-debug-fix` (conditional recovery)
+   - `aido-debug`: diagnosis only, no code mutation.
+   - `aido-debug-fix`: autofix allowed only inside active phase file scope.
+   - If fix needs files outside active phase scope, mark `BLOCKED` and stop.
 
-10. `aido-archive`
-    - Archive plan/progress/decisions only after docs exist.
+10. `aido-document`
+    - Produce module docs and doc coverage report.
 
-11. `aido-clean`
-    - Allowed only after archive+docs are complete.
+11. `aido-archive`
+     - Archive plan/progress/decisions only after docs exist.
+
+12. `aido-clean`
+     - Allowed only after archive+docs are complete.
 
 ## When Standalone Commands Are Used
 
@@ -56,6 +62,7 @@ Standalone commands should not modify `task_plan.md` unless explicitly requested
 Stop and resolve before moving forward if:
 
 - `aido-caveman-review` reports blocking issues.
+- `aido-debug-fix` requires changes outside active phase scope.
 - Documentation files are missing before archive.
 - Archive files are missing before clean.
 - Active module is undefined for non-standalone commands.

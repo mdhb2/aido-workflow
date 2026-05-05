@@ -67,6 +67,11 @@ install_skill_multi "grill-with-docs" \
   "https://raw.githubusercontent.com/mattpocock/skills/main/skills/grill-with-docs/SKILL.md" \
   "https://github.com/mattpocock/skills" || FAILED+=("grill-with-docs")
 
+install_skill_multi "diagnose" \
+  "https://github.com/mattpocock/skills/blob/main/skills/diagnose/SKILL.md" \
+  "https://raw.githubusercontent.com/mattpocock/skills/main/skills/diagnose/SKILL.md" \
+  "https://github.com/mattpocock/skills" || FAILED+=("diagnose")
+
 install_skill_multi "prompt-enhancer" \
   "https://skills.sh/samhvw8/dot-claude/prompt-enhancer" \
   "https://github.com/samhvw8/dot-claude/blob/main/.claude/skills/prompt-enhancer/SKILL.md" \
@@ -109,6 +114,7 @@ if npx skills list -a opencode > /tmp/aido-skills-list.txt 2>/dev/null; then
     "planning-with-files" \
     "code-documenter" \
     "grill-with-docs" \
+    "diagnose" \
     "prompt-enhancer" \
     "compact" \
     "caveman" \
@@ -140,6 +146,8 @@ echo "  - aido-plan-with-file"
 echo "  - aido-breakdown"
 echo "  - aido-execute-next"
 echo "  - aido-caveman-review"
+echo "  - aido-debug"
+echo "  - aido-debug-fix"
 echo "  - aido-document"
 echo "  - aido-archive"
 echo "  - aido-clean"

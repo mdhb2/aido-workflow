@@ -82,6 +82,27 @@ All commands accept both forms: with slash (`/aido-*`) and without slash (`aido-
 - Next command: `/aido-document` if non-blocking; otherwise fix and rerun.
 - Triggers `/aido-plan-with-file`: Conditional.
 
+## /aido-debug
+
+- Purpose: Diagnose errors or unexpected workflow behavior without changing code.
+- Input: Error output, failing step, or anomaly context.
+- Output files: `.aido-workflow/reports/<module>-debug-report.md` or timestamp fallback file in `reports/`.
+- Dependency: Diagnose pattern from `mattpocock/skills`.
+- Mode: Workflow utility (read-only diagnosis).
+- Next command: `/aido-debug-fix` or return to previous workflow step with targeted actions.
+- Triggers `/aido-plan-with-file`: No.
+
+## /aido-debug-fix
+
+- Purpose: Apply targeted autofix for diagnosed issues.
+- Input: Active phase context + debug findings.
+- Output files: append to `progress.md`, append to `test_report.md`, write `reports/<module>-debug-fix-report.md`.
+- Dependency: Diagnose pattern from `mattpocock/skills` with fix pass.
+- Mode: Workflow-integrated recovery command.
+- Scope rule: may only modify files in active phase scope; otherwise mark `BLOCKED`.
+- Next command: `/aido-caveman-review` (recommended) or return to `/aido-execute-next`.
+- Triggers `/aido-plan-with-file`: No.
+
 ## /aido-document
 
 - Purpose: Produce module docs and coverage report.

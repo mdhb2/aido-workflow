@@ -1,6 +1,6 @@
 ---
 name: aido-workflow
-description: unified workflow for zed and opencode. use when the user types commands prefixed with aido such as aido-init, aido-brainstorm, aido-grill, aido-enhance, aido-plan-with-file, aido-breakdown, aido-execute-next, aido-caveman-review, aido-document, aido-archive, aido-clean, aido-status, aido-resume, aido-compact, or aido-caveman. coordinates planning-with-files, grill-with-docs, prompt-enhancer, compact, caveman, caveman-review, code-documenter, gstack-style brainstorming, gsd-style breakdown, and superpowers-style tdd execution while storing all workflow state in .aido-workflow.
+description: unified workflow for zed and opencode. use when the user types commands prefixed with aido such as aido-init, aido-brainstorm, aido-grill, aido-enhance, aido-plan-with-file, aido-breakdown, aido-execute-next, aido-caveman-review, aido-debug, aido-debug-fix, aido-document, aido-archive, aido-clean, aido-status, aido-resume, aido-compact, or aido-caveman. coordinates planning-with-files, grill-with-docs, prompt-enhancer, compact, caveman, caveman-review, diagnose, code-documenter, gstack-style brainstorming, gsd-style breakdown, and superpowers-style tdd execution while storing all workflow state in .aido-workflow.
 ---
 
 # AIDO Workflow Skill
@@ -17,6 +17,8 @@ Detect and route all of the following as equivalent:
 - `aido-breakdown` and `/aido-breakdown`
 - `aido-execute-next` and `/aido-execute-next`
 - `aido-caveman-review` and `/aido-caveman-review`
+- `aido-debug` and `/aido-debug`
+- `aido-debug-fix` and `/aido-debug-fix`
 - `aido-document` and `/aido-document`
 - `aido-archive` and `/aido-archive`
 - `aido-clean` and `/aido-clean`
@@ -170,7 +172,34 @@ Required structure:
   - `.aido-workflow/reports/<module>-doc-coverage.md`
 - Required before archive.
 
-### 10) `aido-archive`
+### 10) `aido-debug` (diagnosis only)
+
+- Use Diagnose pattern from `mattpocock/skills`.
+- Trigger when user reports errors or behavior that does not run as expected.
+- Perform reproduce -> isolate -> hypothesize -> verify loop.
+- Never auto-fix code.
+- Never mutate:
+  - `.aido-workflow/task_plan.md`
+  - phase status in `.aido-workflow/task_plan.md`
+- Write debug report to:
+  - `.aido-workflow/reports/<module>-debug-report.md` (if active module exists)
+  - `.aido-workflow/reports/debug-<YYYY-MM-DD>-<HHMM>.md` (if no active module)
+- May recommend next: `aido-debug-fix`.
+
+### 11) `aido-debug-fix` (autofix, active phase only)
+
+- Use Diagnose pattern from `mattpocock/skills` with fix pass enabled.
+- Scope is restricted to active phase only.
+- Only modify files that belong to current active phase scope (likely files in plan).
+- If required fix exceeds active phase scope, stop and mark phase `BLOCKED` with reason.
+- After fix, run relevant tests and record result.
+- Write/update:
+  - `.aido-workflow/progress.md`
+  - `.aido-workflow/test_report.md`
+  - `.aido-workflow/reports/<module>-debug-fix-report.md` (or timestamp fallback when no active module)
+- If unresolved, keep phase `BLOCKED` and provide next steps.
+
+### 12) `aido-archive`
 
 - Archive current module state:
   - `task_plan.md` -> `archive/task_plans/<YYYY-MM-DD>-<module>-task-plan.md`
@@ -180,7 +209,7 @@ Required structure:
   - `.aido-workflow/modules/<module>.md` exists
   - `.aido-workflow/reports/<module>-doc-coverage.md` exists
 
-### 11) `aido-clean`
+### 13) `aido-clean`
 
 - Only after documentation and archive are complete.
 - Clean only:
@@ -196,7 +225,7 @@ Required structure:
   - `.aido-workflow/specs/`
 - If not allowed, return clear reason.
 
-### 12) `aido-status`
+### 14) `aido-status`
 
 - Read `.aido-workflow/` and report:
   - active module
@@ -210,7 +239,7 @@ Required structure:
   - archive status
   - cleanup readiness
 
-### 13) `aido-resume`
+### 15) `aido-resume`
 
 - Read current state and output:
   - active module
@@ -219,7 +248,7 @@ Required structure:
   - recommendation reason
   - next files to read/update
 
-### 14) `aido-compact` (standalone)
+### 16) `aido-compact` (standalone)
 
 - Use Compact pattern.
 - No active module required.
@@ -227,7 +256,7 @@ Required structure:
 - Must not mutate `.aido-workflow/task_plan.md` unless explicitly requested.
 - May call `/aido-plan-with-file` only if scope/module/planning changed.
 
-### 15) `aido-caveman` (standalone)
+### 17) `aido-caveman` (standalone)
 
 - Use Caveman style simplification.
 - No active module required.
@@ -260,7 +289,7 @@ No auto-call unless explicitly requested:
 
 ## Workflow Order
 
-`aido-init` -> `aido-enhance` (optional) -> `aido-brainstorm` -> `aido-grill` -> `aido-plan-with-file` -> `aido-breakdown` -> `aido-execute-next` -> `aido-caveman-review` (optional/recommended) -> `aido-document` -> `aido-archive` -> `aido-clean`
+`aido-init` -> `aido-enhance` (optional) -> `aido-brainstorm` -> `aido-grill` -> `aido-plan-with-file` -> `aido-breakdown` -> `aido-execute-next` -> `aido-caveman-review` (optional/recommended) -> `aido-debug` or `aido-debug-fix` (when needed) -> `aido-document` -> `aido-archive` -> `aido-clean`
 
 ## Standalone Command Policy
 
@@ -277,6 +306,8 @@ These never require active module and must not disrupt main workflow state.
 - After significant code changes from `aido-execute-next`, run/recommend `aido-caveman-review`.
 - Save review outcomes in progress, test report, and decisions.
 - Do not continue to documentation on blocking findings.
+- On blocking findings or runtime/test anomalies, run `aido-debug` first.
+- Use `aido-debug-fix` only when user requests direct autofix and keep fixes inside active phase scope.
 
 ## Documentation Before Archive
 
