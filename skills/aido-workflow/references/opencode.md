@@ -69,11 +69,10 @@ Install dependencies:
 npx skills add https://github.com/othmanadi/planning-with-files -a opencode -y
 npx skills add https://github.com/Jeffallan/claude-skills/blob/main/skills/code-documenter/SKILL.md -a opencode -y
 npx skills add https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/code-documenter/SKILL.md -a opencode -y
-npx skills add https://skills.sh/mattpocock/skills/grill-with-docs -a opencode -y
-npx skills add https://skills.sh/samhvw8/dot-claude/prompt-enhancer -a opencode -y
-npx skills add https://skills.sh/catlog22/claude-code-workflow/compact -a opencode -y
-npx skills add https://skills.sh/juliusbrussee/caveman/caveman -a opencode -y
-npx skills add https://skills.sh/juliusbrussee/caveman/caveman-review -a opencode -y
+npx skills add https://github.com/mattpocock/skills -a opencode -y
+npx skills add https://github.com/samhvw8/dot-claude -a opencode -y
+npx skills add https://github.com/catlog22/claude-code-workflow -a opencode -y
+npx skills add https://github.com/juliusbrussee/caveman -a opencode -y
 ```
 
 Then verify:

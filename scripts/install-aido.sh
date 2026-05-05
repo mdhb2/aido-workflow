@@ -23,44 +23,73 @@ run_add() {
   npx skills add "$url" -a opencode -y --yes < /dev/null
 }
 
-install_skill() {
+install_skill_multi() {
   local name="$1"
-  local primary_url="$2"
-  local fallback_url="${3:-}"
+  shift
 
   echo "[AIDO] Installing ${name}..."
 
-  if run_add "$primary_url"; then
-    echo "[AIDO][OK] ${name} installed from primary source"
-    return 0
-  fi
-
-  if [ -n "$fallback_url" ]; then
-    echo "[AIDO][WARN] Primary source failed for ${name}, trying fallback..."
-    if run_add "$fallback_url"; then
-      echo "[AIDO][OK] ${name} installed from fallback source"
+  local attempt=1
+  local url
+  for url in "$@"; do
+    echo "[AIDO]  - Attempt ${attempt}: ${url}"
+    if run_add "$url"; then
+      echo "[AIDO][OK] ${name} installed"
       return 0
     fi
-  fi
+    attempt=$((attempt + 1))
+  done
 
   echo "[AIDO][ERROR] Failed to install ${name}"
-  echo "[AIDO][ERROR] Primary:  ${primary_url}"
-  if [ -n "$fallback_url" ]; then
-    echo "[AIDO][ERROR] Fallback: ${fallback_url}"
-  fi
+  echo "[AIDO][ERROR] Tried sources:"
+  for url in "$@"; do
+    echo "[AIDO][ERROR]  - ${url}"
+  done
   return 1
 }
 
 FAILED=()
 
-install_skill "aido-workflow wrapper" "https://github.com/mdhb2/aido-workflow" || FAILED+=("aido-workflow")
-install_skill "planning-with-files" "https://github.com/othmanadi/planning-with-files" || FAILED+=("planning-with-files")
-install_skill "code-documenter" "https://github.com/Jeffallan/claude-skills/blob/main/skills/code-documenter/SKILL.md" "https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/code-documenter/SKILL.md" || FAILED+=("code-documenter")
-install_skill "grill-with-docs" "https://skills.sh/mattpocock/skills/grill-with-docs" || FAILED+=("grill-with-docs")
-install_skill "prompt-enhancer" "https://skills.sh/samhvw8/dot-claude/prompt-enhancer" || FAILED+=("prompt-enhancer")
-install_skill "compact" "https://skills.sh/catlog22/claude-code-workflow/compact" || FAILED+=("compact")
-install_skill "caveman" "https://skills.sh/juliusbrussee/caveman/caveman" || FAILED+=("caveman")
-install_skill "caveman-review" "https://skills.sh/juliusbrussee/caveman/caveman-review" || FAILED+=("caveman-review")
+install_skill_multi "aido-workflow wrapper" \
+  "https://github.com/mdhb2/aido-workflow" || FAILED+=("aido-workflow")
+
+install_skill_multi "planning-with-files" \
+  "https://github.com/othmanadi/planning-with-files" || FAILED+=("planning-with-files")
+
+install_skill_multi "code-documenter" \
+  "https://github.com/Jeffallan/claude-skills/blob/main/skills/code-documenter/SKILL.md" \
+  "https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/code-documenter/SKILL.md" \
+  "https://github.com/Jeffallan/claude-skills" || FAILED+=("code-documenter")
+
+install_skill_multi "grill-with-docs" \
+  "https://skills.sh/mattpocock/skills/grill-with-docs" \
+  "https://github.com/mattpocock/skills/blob/main/skills/grill-with-docs/SKILL.md" \
+  "https://raw.githubusercontent.com/mattpocock/skills/main/skills/grill-with-docs/SKILL.md" \
+  "https://github.com/mattpocock/skills" || FAILED+=("grill-with-docs")
+
+install_skill_multi "prompt-enhancer" \
+  "https://skills.sh/samhvw8/dot-claude/prompt-enhancer" \
+  "https://github.com/samhvw8/dot-claude/blob/main/.claude/skills/prompt-enhancer/SKILL.md" \
+  "https://raw.githubusercontent.com/samhvw8/dot-claude/main/.claude/skills/prompt-enhancer/SKILL.md" \
+  "https://github.com/samhvw8/dot-claude" || FAILED+=("prompt-enhancer")
+
+install_skill_multi "compact" \
+  "https://skills.sh/catlog22/claude-code-workflow/compact" \
+  "https://github.com/catlog22/claude-code-workflow/blob/main/skills/compact/SKILL.md" \
+  "https://raw.githubusercontent.com/catlog22/claude-code-workflow/main/skills/compact/SKILL.md" \
+  "https://github.com/catlog22/claude-code-workflow" || FAILED+=("compact")
+
+install_skill_multi "caveman" \
+  "https://skills.sh/juliusbrussee/caveman/caveman" \
+  "https://github.com/juliusbrussee/caveman/blob/main/skills/caveman/SKILL.md" \
+  "https://raw.githubusercontent.com/juliusbrussee/caveman/main/skills/caveman/SKILL.md" \
+  "https://github.com/juliusbrussee/caveman" || FAILED+=("caveman")
+
+install_skill_multi "caveman-review" \
+  "https://skills.sh/juliusbrussee/caveman/caveman-review" \
+  "https://github.com/juliusbrussee/caveman/blob/main/skills/caveman-review/SKILL.md" \
+  "https://raw.githubusercontent.com/juliusbrussee/caveman/main/skills/caveman-review/SKILL.md" \
+  "https://github.com/juliusbrussee/caveman" || FAILED+=("caveman-review")
 
 if [ ${#FAILED[@]} -gt 0 ]; then
   echo
@@ -90,12 +119,11 @@ if npx skills list -a opencode > /tmp/aido-skills-list.txt 2>/dev/null; then
   done
 
   if [ ${#MISSING[@]} -gt 0 ]; then
-    echo "[AIDO][ERROR] Installed list is missing: ${MISSING[*]}"
-    echo "[AIDO][ERROR] Run manual installs for missing items, then re-check with: npx skills list -a opencode"
-    exit 1
+    echo "[AIDO][WARN] Could not confirm these exact names in list: ${MISSING[*]}"
+    echo "[AIDO][WARN] Some repositories install with different skill names. Please verify available skills manually."
+  else
+    echo "[AIDO][OK] All expected supporting skills detected in OpenCode list."
   fi
-
-  echo "[AIDO][OK] All expected supporting skills detected in OpenCode list."
 else
   echo "[AIDO][WARN] Could not run 'npx skills list -a opencode'."
   echo "[AIDO][WARN] Please verify manually in OpenCode by running: aido-status and /aido-status"
