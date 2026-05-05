@@ -10,7 +10,7 @@ fi
 
 run_add() {
   local url="$1"
-  npx skills add "$url" -a opencode -y
+  npx skills add "$url" -a opencode -y < /dev/null
 }
 
 install_skill() {
