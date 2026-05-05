@@ -58,7 +58,7 @@ npx skills add https://github.com/mdhb2/aido-workflow -a opencode -y
 Full setup:
 
 ```bash
-curl -fsSL https://github.com/mdhb2/aido-workflow/main/scripts/install-aido.sh | bash
+curl -fsSL https://raw.githubusercontent.com/mdhb2/aido-workflow/master/scripts/install-aido.sh | bash
 ```
 
 ## Verify in OpenCode
