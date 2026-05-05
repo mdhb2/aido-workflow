@@ -23,6 +23,61 @@ run_add() {
   npx skills add "$url" -a opencode -y --yes < /dev/null
 }
 
+install_opencode_commands() {
+  local base="${HOME}/.config/opencode"
+  local dir1="${base}/command"
+  local dir2="${base}/commands"
+
+  mkdir -p "$dir1" "$dir2"
+
+  write_cmd() {
+    local name="$1"
+    local desc="$2"
+    local target
+    for target in "$dir1/$name.md" "$dir2/$name.md"; do
+      cat > "$target" <<EOF
+---
+description: ${desc}
+---
+You are executing \\`${name}\\` with arguments:
+
+\\`\$ARGUMENTS\\`
+
+Route to the \\`aido-workflow\\` skill behavior for \\`${name}\\`.
+
+Rules:
+1. Treat this as workflow command orchestration, not a shell executable.
+2. Use only \\`.aido-workflow/\\` for state (never \\`.aido/\\` for new work).
+3. Follow policies in \\`skills/aido-workflow/SKILL.md\\` and references.
+4. For \\`aido-debug\\`: diagnosis only, no autofix.
+5. For \\`aido-debug-fix\\`: autofix allowed only within active phase scope.
+EOF
+    done
+  }
+
+  write_cmd "aido-init" "Initialize AIDO workflow state in .aido-workflow"
+  write_cmd "aido-brainstorm" "Run AIDO role-based brainstorming and persist outcomes"
+  write_cmd "aido-grill" "Run AIDO grill-with-docs stress test for active module"
+  write_cmd "aido-enhance" "Run AIDO prompt enhancement flow"
+  write_cmd "aido-plan-with-file" "Create or update active module plan files"
+  write_cmd "aido-breakdown" "Break active module into executable phases"
+  write_cmd "aido-execute-next" "Execute next pending phase with TDD"
+  write_cmd "aido-caveman-review" "Run caveman-style review before documentation"
+  write_cmd "aido-debug" "Diagnose errors without applying code fixes"
+  write_cmd "aido-debug-fix" "Diagnose and auto-fix within active phase scope"
+  write_cmd "aido-document" "Generate module documentation and coverage report"
+  write_cmd "aido-archive" "Archive module workflow artifacts"
+  write_cmd "aido-clean" "Clean transient active workflow files"
+  write_cmd "aido-status" "Show AIDO workflow status summary"
+  write_cmd "aido-resume" "Resume AIDO workflow from current state"
+  write_cmd "aido-compact" "Compact long context into actionable summary"
+  write_cmd "aido-caveman" "Rewrite requirements into direct low-ambiguity language"
+
+  echo "[AIDO][OK] OpenCode slash command files installed/updated in:"
+  echo "[AIDO][OK]  - $dir1"
+  echo "[AIDO][OK]  - $dir2"
+}
+
 install_skill_multi() {
   local name="$1"
   shift
@@ -134,6 +189,10 @@ else
   echo "[AIDO][WARN] Could not run 'npx skills list -a opencode'."
   echo "[AIDO][WARN] Please verify manually in OpenCode by running: aido-status and /aido-status"
 fi
+
+echo
+echo "[AIDO] Installing OpenCode slash command wrappers..."
+install_opencode_commands
 
 echo
 echo "[AIDO] Setup complete."
