@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# If executed via pipe (e.g. curl ... | bash), re-exec from a temp file.
+# This avoids stdin being consumed by nested CLIs during install steps.
+if [ ! -t 0 ] && [ "${AIDO_REEXEC:-0}" != "1" ]; then
+  tmp_script="$(mktemp "${TMPDIR:-/tmp}/aido-install.XXXXXX.sh")"
+  cat > "$tmp_script"
+  chmod +x "$tmp_script"
+  AIDO_REEXEC=1 bash "$tmp_script" "$@"
+  exit $?
+fi
+
 echo "[AIDO] Starting full OpenCode skill setup..."
 
 if ! command -v npx >/dev/null 2>&1; then
@@ -10,7 +20,7 @@ fi
 
 run_add() {
   local url="$1"
-  npx skills add "$url" -a opencode -y < /dev/null
+  npx skills add "$url" -a opencode -y --yes < /dev/null
 }
 
 install_skill() {
@@ -61,9 +71,31 @@ fi
 
 echo
 echo "[AIDO] Running post-install verification..."
-if npx skills list -a opencode >/dev/null 2>&1; then
-  npx skills list -a opencode
-  echo "[AIDO][OK] Skill list command completed. Confirm supporting skills appear above."
+if npx skills list -a opencode > /tmp/aido-skills-list.txt 2>/dev/null; then
+  cat /tmp/aido-skills-list.txt
+
+  MISSING=()
+  for expected in \
+    "aido-workflow" \
+    "planning-with-files" \
+    "code-documenter" \
+    "grill-with-docs" \
+    "prompt-enhancer" \
+    "compact" \
+    "caveman" \
+    "caveman-review"; do
+    if ! grep -qi "$expected" /tmp/aido-skills-list.txt; then
+      MISSING+=("$expected")
+    fi
+  done
+
+  if [ ${#MISSING[@]} -gt 0 ]; then
+    echo "[AIDO][ERROR] Installed list is missing: ${MISSING[*]}"
+    echo "[AIDO][ERROR] Run manual installs for missing items, then re-check with: npx skills list -a opencode"
+    exit 1
+  fi
+
+  echo "[AIDO][OK] All expected supporting skills detected in OpenCode list."
 else
   echo "[AIDO][WARN] Could not run 'npx skills list -a opencode'."
   echo "[AIDO][WARN] Please verify manually in OpenCode by running: aido-status and /aido-status"

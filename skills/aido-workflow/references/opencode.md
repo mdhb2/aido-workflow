@@ -14,6 +14,13 @@ Full setup:
 curl -fsSL https://raw.githubusercontent.com/mdhb2/aido-workflow/master/scripts/install-aido.sh | bash
 ```
 
+Alternative:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/mdhb2/aido-workflow/master/scripts/install-aido.sh -o /tmp/install-aido.sh
+bash /tmp/install-aido.sh
+```
+
 ## Check Skill Is Active
 
 1. Confirm skill name is `aido-workflow`.

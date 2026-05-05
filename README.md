@@ -66,6 +66,13 @@ It also runs `npx skills list -a opencode` at the end for verification.
 
 Note: the installer protects against stdin consumption from nested CLI tools so it works reliably with `curl ... | bash`.
 
+Alternative (recommended for strict shells):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/mdhb2/aido-workflow/master/scripts/install-aido.sh -o /tmp/install-aido.sh
+bash /tmp/install-aido.sh
+```
+
 ## Verify in OpenCode
 
 1. Ensure skill appears as `aido-workflow`.
