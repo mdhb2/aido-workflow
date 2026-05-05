@@ -8,29 +8,27 @@ if ! command -v npx >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "[AIDO] Installing aido-workflow wrapper skill..."
-npx skills add https://github.com/mdhb2/aido-workflow -a opencode -y
+install_skill() {
+  local name="$1"
+  local url="$2"
 
-echo "[AIDO] Installing planning-with-files..."
-npx skills add https://github.com/othmanadi/planning-with-files -a opencode -y
+  echo "[AIDO] Installing ${name}..."
+  if npx skills add "$url" -a opencode -y; then
+    echo "[AIDO][OK] ${name} installed"
+  else
+    echo "[AIDO][ERROR] Failed to install ${name} from ${url}"
+    exit 1
+  fi
+}
 
-echo "[AIDO] Installing code-documenter source skill bundle..."
-npx skills add https://github.com/Jeffallan/claude-skills -a opencode -y
-
-echo "[AIDO] Installing grill-with-docs..."
-npx skills add https://skills.sh/mattpocock/skills/grill-with-docs -a opencode -y
-
-echo "[AIDO] Installing prompt-enhancer..."
-npx skills add https://skills.sh/samhvw8/dot-claude/prompt-enhancer -a opencode -y
-
-echo "[AIDO] Installing compact..."
-npx skills add https://skills.sh/catlog22/claude-code-workflow/compact -a opencode -y
-
-echo "[AIDO] Installing caveman..."
-npx skills add https://skills.sh/juliusbrussee/caveman/caveman -a opencode -y
-
-echo "[AIDO] Installing caveman-review..."
-npx skills add https://skills.sh/juliusbrussee/caveman/caveman-review -a opencode -y
+install_skill "aido-workflow wrapper" "https://github.com/mdhb2/aido-workflow"
+install_skill "planning-with-files" "https://github.com/othmanadi/planning-with-files"
+install_skill "code-documenter" "https://github.com/Jeffallan/claude-skills/blob/main/skills/code-documenter/SKILL.md"
+install_skill "grill-with-docs" "https://skills.sh/mattpocock/skills/grill-with-docs"
+install_skill "prompt-enhancer" "https://skills.sh/samhvw8/dot-claude/prompt-enhancer"
+install_skill "compact" "https://skills.sh/catlog22/claude-code-workflow/compact"
+install_skill "caveman" "https://skills.sh/juliusbrussee/caveman/caveman"
+install_skill "caveman-review" "https://skills.sh/juliusbrussee/caveman/caveman-review"
 
 echo
 echo "[AIDO] Setup complete."
