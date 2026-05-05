@@ -161,6 +161,7 @@ Required structure:
 ### 7) `aido-execute-next`
 
 - Execute only next `PENDING` phase.
+- Must invoke `/tdd` before implementation to enforce test-first execution.
 - Enforce TDD flow:
   1. Read `task_plan.md`
   2. Select next `PENDING`

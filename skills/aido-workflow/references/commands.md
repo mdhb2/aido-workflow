@@ -67,7 +67,7 @@ All commands accept both forms: with slash (`/aido-*`) and without slash (`aido-
 - Purpose: Execute next `PENDING` phase using TDD.
 - Input: `.aido-workflow/task_plan.md`.
 - Output files: `task_plan.md`, `progress.md`, `test_report.md`, `decisions.md`.
-- Dependency: Superpowers-style TDD execution.
+- Dependency: Superpowers-style TDD execution via `/tdd`.
 - Mode: Workflow-integrated.
 - Next command: `/aido-caveman-review` (recommended after significant code change).
 - Triggers `/aido-plan-with-file`: No.

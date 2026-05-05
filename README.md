@@ -76,6 +76,12 @@ curl -fsSL https://raw.githubusercontent.com/mdhb2/aido-workflow/master/scripts/
 bash /tmp/install-aido.sh
 ```
 
+Installer regression test (PASS/FAIL per test):
+
+```bash
+bash scripts/test-install-aido.sh
+```
+
 ## Verify in OpenCode
 
 1. Ensure skill appears as `aido-workflow`.
@@ -159,6 +165,7 @@ Rules:
 
 ## Review Policy
 
+- `aido-execute-next` must invoke `/tdd` and run test-first vertical slices.
 - After `aido-execute-next`, if code changed significantly, run or recommend `aido-caveman-review`.
 - Save review findings to:
   - `.aido-workflow/progress.md`

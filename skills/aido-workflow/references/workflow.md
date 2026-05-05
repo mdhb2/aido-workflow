@@ -29,6 +29,7 @@ Ideal order:
 
 7. `aido-execute-next`
     - Run strict TDD for next `PENDING` phase.
+    - Invoke `/tdd` and execute vertical red-green-refactor slices.
     - If failing unexpectedly or repeatedly, run `aido-debug` before continuing.
 
 8. `aido-caveman-review` (recommended)
